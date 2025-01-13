@@ -110,7 +110,10 @@ func enableCORS(next http.Handler) http.Handler {
 func main() {
 
 	mux := http.NewServeMux()
-    mux.HandleFunc("/", ShortURLhandler)
+
+	mux.Handle("/", http.FileServer(http.Dir("./static")))
+
+    mux.HandleFunc("/shorten", ShortURLhandler)
     mux.HandleFunc("/redirect/", redirectURLhandler)
 
     handler := enableCORS(mux)
