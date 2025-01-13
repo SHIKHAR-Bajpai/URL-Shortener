@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>URL Shortener</title>
+</head>
+<body class="bg-black text-white">
+    <div class="font-serif">
+        <h1 class="flex justify-center text-5xl mt-60 font-bold font-serif">URL SHORTENER</h1>
+
+        <form class="flex justify-center items-center text-2xl mt-12" id="urlForm">
+            <label class="ml-12 mr-4 py-2" for="url">Enter URL:</label>
+            <input class="px-6 py-1 border-2 border-black rounded-md text-ellipsis text-black" type="text" id="url" name="url" required>
+            <button class="ml-4 border-2 border-white bg-black px-4 text-white text-md" type="submit">Shorten URL</button>
+        </form>
+
+        <p class="flex flex-col justify-center items-center mt-12 text-2xl font-serif" id="result"></p>
+    </div>
+
+    <script>
+        document.getElementById('urlForm').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            const url = document.getElementById('url').value; 
+
+            fetch('http://localhost:4000/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url: url })
+            })
+            .then(response => response.json())  
+            .then(data => {
+                const shortUrl = data.short_url; 
+                console.log(shortUrl);
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `<div><span class="mr-2">Shortened URL:</span> "<u>http://localhost:4000/redirect/${shortUrl}</u>" </div> <a class="ml-4 mt-4" href="http://localhost:4000/redirect/${shortUrl}" target="_blank">Click Here for Linked Page</a>`;
+            })
+            .catch(error => console.error('Error:', error)); 
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlInput = document.getElementById('url');
+            const label = document.getElementById('urlLabel');
+
+            if (urlInput) {
+                urlInput.value = ''; 
+            }
+
+            if (label) {
+                label.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
