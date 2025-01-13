@@ -23,13 +23,10 @@ func generateShortURL(OriginalUrl string) string {
 
 	hasher := md5.New()
 	hasher.Write([]byte(OriginalUrl))
-	// fmt.Println("hasher result : ", hasher)
 
 	data := hasher.Sum(nil)
-	// fmt.Println("hasher result : ", data)
 
 	hash := hex.EncodeToString(data)
-	// fmt.Println("hasher result : ", hash[:8])
 
 	return hash[:8]
 }
@@ -67,12 +64,12 @@ func ShortURLhandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Invalid request Body", http.StatusBadRequest)
 		fmt.Println("Error decoding JSON:", err)
+		return
 	}
 
 	fmt.Println("Received URL:", data.URL)
 
 	shortURL := createURL(data.URL)
-	// json.NewEncoder(w).Encode(shortURL)
 
 	response := struct {
 		ShortenURL string `json:"short_url"`
@@ -122,6 +119,7 @@ func main() {
     err := http.ListenAndServe(":4000", handler)
     if err != nil {
         fmt.Println("Error starting server:", err)
+		return
     }
 
 }
